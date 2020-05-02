@@ -229,12 +229,15 @@ class USBDevice(USBDescribable):
         # and then the type
         req_type = req.get_type()
         handler_entity = None
-        if req_type == USB.request_type_standard:
-            handler_entity = recipient
-        elif req_type == USB.request_type_class:
-            handler_entity = recipient.device_class
-        elif req_type == USB.request_type_vendor:
-            handler_entity = recipient.device_vendor
+        try:
+          if req_type == USB.request_type_standard:
+              handler_entity = recipient
+          elif req_type == USB.request_type_class:
+              handler_entity = recipient.device_class
+          elif req_type == USB.request_type_vendor:
+              handler_entity = recipient.device_vendor
+        except AttributeError as e:
+          print("Caught AttributeError"+str(e.message))
 
         if not handler_entity:
             print(self.name, "invalid handler entity, stalling: {}".format(req))
