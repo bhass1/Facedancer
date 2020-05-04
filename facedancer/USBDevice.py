@@ -237,7 +237,7 @@ class USBDevice(USBDescribable):
           elif req_type == USB.request_type_vendor:
               handler_entity = recipient.device_vendor
         except AttributeError as e:
-          print("Caught AttributeError"+str(e.message))
+          print("Caught AttributeError"+str(e))
 
         if not handler_entity:
             print(self.name, "invalid handler entity, stalling: {}".format(req))
