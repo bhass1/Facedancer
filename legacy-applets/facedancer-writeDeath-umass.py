@@ -16,6 +16,7 @@
 #   # losetup -d /dev/loopX
 
 import sys
+import argparse
 
 from serial import Serial, PARITY_NONE
 
@@ -92,18 +93,39 @@ class RawDiskImage(DiskImage):
         self.image[block_start:block_end] = data[:self.block_size]
         self.image.flush()
 
+def getOpts():
+    parser = argparse.ArgumentParser(description='Emulate USB Mass Storage w/ Facedancer. And die when a write request is received. ')
+    parser.add_argument('disk', type=str,
+                                default="disk.img",
+                                help='Disk img file to emulate')
+    parser.add_argument('-q', dest='quiet', 
+                                required=False,
+                                action='store_true',
+                                help="Quiet. Don't output to console")
 
-if len(sys.argv)==1:
-    print("Usage: facedancer-umass.py disk.img");
-    sys.exit(1);
+    args = parser.parse_args()
+    print("> using disk: "+args.disk)
+    print("> using quiet: {}".format(args.quiet))
 
-u = FacedancerUSBApp(verbose=3)
-i = RawDiskImage(sys.argv[1], 512, verbose=3)
-d = USBMassStorageDevice(u, i, verbose=3)
+    return args
 
-d.connect()
+def main():
+    args = getOpts()
+    if args.quiet:
+        vbose = 0
+    else:
+        vbose = 3
+    
+    u = FacedancerUSBApp(verbose=vbose)
+    i = RawDiskImage(args.disk, 512, verbose=vbose)
+    d = USBMassStorageDevice(u, i, verbose=vbose)
+    
+    d.connect()
+    
+    try:
+        d.run()
+    except KeyboardInterrupt:
+        d.disconnect()
 
-try:
-    d.run()
-except KeyboardInterrupt:
-    d.disconnect()
+if __name__=="__main__":
+    main()
