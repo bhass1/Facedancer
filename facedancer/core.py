@@ -11,7 +11,7 @@ from .USBDevice import USBDevice
 from .USBConfiguration import USBConfiguration
 from .USBEndpoint import USBEndpoint
 
-def FacedancerUSBApp(verbose=0, quirks=None):
+def FacedancerUSBApp(verbose=0, quirks=None, backend=None):
     """
     Convenience function that automatically creates a FacedancerApp
     based on the BOARD environment variable and some crude internal
@@ -20,7 +20,7 @@ def FacedancerUSBApp(verbose=0, quirks=None):
     verbose: Sets the verbosity level of the relevant app. Increasing
         this from zero yields progressively more output.
     """
-    return FacedancerApp.autodetect(verbose, quirks)
+    return FacedancerApp.autodetect(verbose, quirks, backend)
 
 
 class FacedancerApp:
@@ -28,7 +28,7 @@ class FacedancerApp:
     app_num = 0x00
 
     @classmethod
-    def autodetect(cls, verbose=0, quirks=None):
+    def autodetect(cls, verbose=0, quirks=None, backend=None):
         """
         Convenience function that automatically creates the apporpriate
         sublass based on the BOARD environment variable and some crude internal
@@ -38,7 +38,9 @@ class FacedancerApp:
             this from zero yields progressively more output.
         """
 
-        if 'BACKEND' in os.environ:
+        if backend:
+            backend_name = backend.lower()
+        elif 'BACKEND' in os.environ:
             backend_name = os.environ['BACKEND'].lower()
         else:
             backend_name = None

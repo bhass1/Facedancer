@@ -116,7 +116,7 @@ def main():
     else:
         vbose = 3
     
-    u = FacedancerUSBApp(verbose=vbose)
+    u = FacedancerUSBApp(verbose=vbose, backend="greatfet")
     i = RawDiskImage(args.disk, 512, verbose=vbose)
     d = USBMassStorageDevice(u, i, verbose=vbose)
     
