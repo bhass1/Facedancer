@@ -20,8 +20,8 @@ import argparse
 
 from serial import Serial, PARITY_NONE
 
-from facedancer import FacedancerUSBApp
-from USBMassStorage import *
+from facedancer.core import FacedancerUSBApp
+from legacy_applets.USBMassStorage import *
 
 class RawDiskImage(DiskImage):
     """
